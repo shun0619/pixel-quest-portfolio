@@ -5,11 +5,13 @@
   --bezel-2: #283149;
   --bezel-ink: #c9d3ea;
   --bezel-mute: #a3aecb;
-  --sky-top: #e6f5ec;
-  --sky-bot: #cbe9d6;
+  --sky-top: #e2f4f1;
+  --sky-bot: #c4e7dc;
   --pad: #a9d790;
   --pad-edge: #6fa457;
   --ground: #bfe2c9;
+  --meadow-top: #bfe5ae;
+  --meadow-bot: #a3d58f;
   --open-bg: #d8f3df;
   --open-ink: #1f6b3a;
   --ink: #1b1f2a;
@@ -106,34 +108,36 @@ img, canvas { max-width: 100%; }
 
 /* ---------- Battle ---------- */
 .battle { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.field { position: relative; isolation: isolate; flex: 1; background: linear-gradient(var(--sky-top), var(--sky-bot) 32%, var(--ground) 32%, var(--sky-bot) 100%); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr) minmax(0, 1.25fr); gap: 4px 12px; padding: 14px 18px 8px; min-height: 0; }
-.field::before {
-  content: ""; position: absolute; inset: 32% 0 0 0; z-index: -1; pointer-events: none;
-  background-image:
-    repeating-linear-gradient(30deg, rgba(95, 157, 75, .16) 0 1px, transparent 1px 34px),
-    repeating-linear-gradient(-30deg, rgba(95, 157, 75, .16) 0 1px, transparent 1px 34px);
+/* Battle field: banded sky over a striped meadow, horizon a little below the middle.
+   Developer stands far right on the horizon; the visitor is close, bottom left, cropped by the HUD. */
+.field {
+  position: relative; flex: 1; min-height: 0; overflow: hidden;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .3) 0 2px, transparent 2px 13px) top / 100% 44% no-repeat,
+    repeating-linear-gradient(180deg, rgba(79, 140, 62, .13) 0 3px, transparent 3px 17px) bottom / 100% 56% no-repeat,
+    linear-gradient(var(--sky-top), var(--sky-bot) 44%, var(--meadow-top) 44%, var(--meadow-bot) 100%);
 }
-.foe-card { grid-area: 1 / 1; align-self: start; }
-.foe { grid-area: 1 / 2; justify-self: center; }
-.me { grid-area: 2 / 1; justify-self: center; align-self: end; }
-.me-card { grid-area: 2 / 2; align-self: end; }
+.foe-card { position: absolute; z-index: 2; top: 4%; left: 3%; width: min(46%, 340px); }
+.foe { position: absolute; z-index: 1; right: 13%; top: 19%; }
+.me { position: absolute; z-index: 1; left: 12%; bottom: -12%; }
+.me-card { position: absolute; z-index: 2; right: 3%; bottom: 7%; width: min(44%, 320px); }
 
 .sprite { position: relative; padding: 0; background: none; border: 0; display: flex; justify-content: center; }
 .sprite svg { display: block; width: auto; max-width: none; overflow: visible; }
 .sprite .blocky-body { animation: bob 1.4s steps(2) infinite; }
 .me .blocky-body { animation-delay: .7s; }
-.foe svg { height: clamp(104px, 22vh, 200px); }
-.me svg { height: clamp(136px, 31vh, 280px); }
+.foe svg { height: clamp(120px, 27vh, 230px); }
+.me svg { height: clamp(150px, 35vh, 300px); }
 .foe.hit .blocky-body { animation: shake .3s steps(3); }
 
 .info {
   background: var(--paper); border: 3px solid var(--ink); border-radius: 4px 16px 4px 16px;
-  padding: 10px 14px 12px; box-shadow: 4px 4px 0 rgba(27, 31, 42, .25);
-  display: flex; flex-direction: column; gap: 7px; min-width: 0;
+  padding: 9px 14px 11px; box-shadow: 4px 4px 0 rgba(27, 31, 42, .25);
+  display: flex; flex-direction: column; gap: 6px; min-width: 0;
 }
 .info-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.info-name { font-family: var(--f-display); font-size: 16px; overflow-wrap: anywhere; }
-.info-sub { font-family: var(--f-read); font-weight: 600; font-size: 16px; letter-spacing: .06em; color: var(--mute); }
+.info-name { font-family: var(--f-display); font-size: 15px; overflow-wrap: anywhere; }
+.info-sub { font-family: var(--f-read); font-weight: 600; font-size: 14px; letter-spacing: .06em; color: var(--mute); }
 .meter { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 8px; }
 .meter b { font-family: var(--f-display); font-size: 9px; font-weight: 400; letter-spacing: .06em; color: var(--mute); }
 .open-tag { align-self: flex-start; font-family: var(--f-display); font-size: 9px; letter-spacing: .06em; line-height: 1.5; background: var(--open-bg); color: var(--open-ink); padding: 6px 8px 5px; border-radius: 3px; }
@@ -278,7 +282,11 @@ kbd { font-family: var(--f-display); font-size: 10px; border: 1px solid #3b4664;
   .msg { min-height: 72px; font-size: 17px; padding: 10px 14px; }
   .console-foot .keys { display: none; }
   .cmd { padding-block: 7px; }
-  .field { padding: 14px 12px 8px; }
+  .foe-card, .me-card { width: 54%; }
+  .foe { right: 4%; top: 30%; }
+  .me { left: 2%; }
+  .info-sub { font-size: 12px; }
+  .types { display: none; }
   .info { padding: 8px 10px 10px; }
   .info-name { font-size: 10px; }
   .stats { grid-template-columns: 1fr; gap: 14px; }
