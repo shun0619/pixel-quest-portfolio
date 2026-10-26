@@ -103,18 +103,21 @@ img, canvas { max-width: 100%; }
 
 /* ---------- Battle ---------- */
 .battle { min-height: 520px; display: flex; flex-direction: column; }
-.field { flex: 1; background: linear-gradient(var(--sky-top), var(--sky-bot) 64%, var(--ground) 64%); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 6px 12px; padding: 18px 18px 10px; }
+.field { flex: 1; background: linear-gradient(var(--sky-top), var(--sky-bot) 32%, var(--ground) 32%, var(--sky-bot) 100%); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 6px 12px; padding: 18px 18px 10px; }
 .foe-card { grid-area: 1 / 1; align-self: start; }
 .foe { grid-area: 1 / 2; justify-self: center; }
 .me { grid-area: 2 / 1; justify-self: center; align-self: end; }
 .me-card { grid-area: 2 / 2; align-self: end; }
 
 .sprite { position: relative; padding: 0 0 14px; background: none; border: 0; display: flex; justify-content: center; }
-.sprite::before { content: ""; position: absolute; left: -45%; right: -45%; bottom: 0; height: 38px; border-radius: 50%; background: var(--pad); border: 3px solid var(--pad-edge); }
+/* Far platform (developer) is smaller than the near one (visitor) to sell the depth. */
+.sprite::before { content: ""; position: absolute; left: -18%; right: -18%; bottom: 0; height: 30px; border-radius: 50%; background: var(--pad); border: 3px solid var(--pad-edge); }
 .sprite svg { position: relative; display: block; width: auto; max-width: none; animation: bob 1.4s steps(2) infinite; }
-.foe svg { height: clamp(170px, 34vw, 240px); }
-.me svg { height: clamp(120px, 24vw, 168px); animation-delay: .7s; }
-.me::before { height: 30px; }
+.sprite svg { margin-bottom: -2px; }
+.foe svg { height: clamp(130px, 24vw, 176px); }
+.me svg { height: clamp(176px, 36vw, 250px); animation-delay: .7s; }
+.me { padding-bottom: 20px; }
+.me::before { height: 42px; left: -22%; right: -22%; }
 .foe.hit svg { animation: shake .3s steps(3); }
 
 .info {

@@ -140,9 +140,13 @@ export function buildBlocky(p: BlockyPalette): BlockyShape {
   const xs = raw.flatMap((r) => r.pts.map((q) => q[0]));
   const ys = raw.flatMap((r) => r.pts.map((q) => q[1]));
   const pad = 2;
-  const minX = Math.min(...xs) - pad;
+  // Centre the view box on the feet so the character stands in the middle of its platform,
+  // whichever way it faces.
+  const [feetX] = P(3, 1.6, 0);
+  const half = Math.max(feetX - Math.min(...xs), Math.max(...xs) - feetX) + pad;
+  const minX = feetX - half;
   const minY = Math.min(...ys) - pad;
-  const width = Math.max(...xs) + pad - minX;
+  const width = half * 2;
   const height = Math.max(...ys) + pad - minY;
   const polys = raw.map((r) => ({
     fill: r.fill,
