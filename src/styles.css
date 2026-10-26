@@ -41,6 +41,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 /* The whole site fits the viewport: no page scroll on desktop or tablet. */
 html { height: 100%; }
+#root { height: 100%; }
 body {
   margin: 0;
   height: 100dvh;
@@ -111,7 +112,7 @@ img, canvas { max-width: 100%; }
 /* Battle field: banded sky over a striped meadow, horizon a little below the middle.
    Developer stands far right on the horizon; the visitor is close, bottom left, cropped by the HUD. */
 .field {
-  position: relative; flex: 1; min-height: 0; overflow: hidden;
+  position: relative; flex: 1; min-height: 240px; overflow: hidden;
   background:
     repeating-linear-gradient(180deg, rgba(255, 255, 255, .3) 0 2px, transparent 2px 13px) top / 100% 44% no-repeat,
     repeating-linear-gradient(180deg, rgba(79, 140, 62, .13) 0 3px, transparent 3px 17px) bottom / 100% 56% no-repeat,
