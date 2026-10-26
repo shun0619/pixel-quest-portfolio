@@ -10,7 +10,7 @@ export function QuickPanel({ profile }: { profile: Profile }) {
     <div className="qv">
       <header className="qv-hero">
         <div className="qv-avatar">
-          <Blocky palette={BLOCKY_PALETTES.developer} />
+          <Blocky palette={BLOCKY_PALETTES.developer} ground={false} />
         </div>
         <div className="qv-id">
           <h3 className="qv-name">{profile.name}</h3>

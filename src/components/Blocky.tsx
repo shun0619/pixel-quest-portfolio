@@ -5,19 +5,30 @@ interface Props {
   palette: BlockyPalette;
   /** Mirror horizontally so the character faces right. */
   flip?: boolean;
+  /** Draw the grass tile the character stands on. */
+  ground?: boolean;
   className?: string;
 }
 
-export function Blocky({ palette, flip = false, className }: Props) {
+export function Blocky({ palette, flip = false, ground = true, className }: Props) {
   const shape = useMemo(() => buildBlocky(palette), [palette]);
   const w = shape.width.toFixed(1);
   const h = shape.height.toFixed(1);
   return (
     <svg className={className} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" focusable="false">
       <g transform={flip ? `translate(${w} 0) scale(-1 1)` : undefined} stroke={BLOCKY_OUTLINE} strokeWidth="1.2" strokeLinejoin="round">
-        {shape.polys.map((poly, i) => (
-          <polygon key={i} points={poly.points} fill={poly.fill} />
-        ))}
+        {ground && (
+          <g className="blocky-ground">
+            {shape.ground.map((poly, i) => (
+              <polygon key={i} points={poly.points} fill={poly.fill} stroke={poly.fill.startsWith("rgba") ? "none" : undefined} />
+            ))}
+          </g>
+        )}
+        <g className="blocky-body">
+          {shape.body.map((poly, i) => (
+            <polygon key={i} points={poly.points} fill={poly.fill} />
+          ))}
+        </g>
       </g>
     </svg>
   );

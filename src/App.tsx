@@ -30,7 +30,7 @@ const POKE_LINES = [
 
 const INTRO: Record<PanelKey, string> = {
   projects: `Your project log has ${profile.projects.length} entries. Pick one to inspect.`,
-  skills: `You checked ${name}'s stats.`,
+  skills: `You checked ${name}'s stats. Longer POWER bars are the skills he uses most.`,
   history: `You opened the key items pocket. ${profile.history.length} items and ${profile.badges.length} badges inside.`,
   contact: `${name} is looking at you expectantly.`,
   quick: "The short version. Press START on the title screen for the full adventure.",

@@ -17,8 +17,13 @@ export interface BlockyPalette {
   logo: string;
 }
 
+type Poly = { points: string; fill: string };
+
 export interface BlockyShape {
-  polys: { points: string; fill: string }[];
+  /** Isometric grass tile and contact shadow the character stands on. */
+  ground: Poly[];
+  /** The character itself. */
+  body: Poly[];
   width: number;
   height: number;
 }
@@ -71,8 +76,11 @@ export const BLOCKY_PALETTES = {
   },
 } satisfies Record<string, BlockyPalette>;
 
+const GRASS: Shade = ["#a9d790", "#7fbf63", "#5f9d4b"];
+const DIRT: Shade = ["#8a6a4a", "#8a6a4a", "#6e5238"];
+
 export function buildBlocky(p: BlockyPalette): BlockyShape {
-  const raw: { pts: [number, number][]; fill: string }[] = [];
+  let raw: { pts: [number, number][]; fill: string }[] = [];
   const P = (x: number, y: number, z: number): [number, number] => [(x - y) * COS30 * UNIT, (x + y) * 0.5 * UNIT - z * UNIT];
   const poly = (pts: [number, number, number][], fill: string) => raw.push({ pts: pts.map((q) => P(...q)), fill });
   const box = (x0: number, x1: number, y0: number, y1: number, z0: number, z1: number, [top, front, side]: Shade) => {
@@ -86,6 +94,13 @@ export function buildBlocky(p: BlockyPalette): BlockyShape {
     poly([[x, y0, z0], [x, y1, z0], [x, y1, z1], [x, y0, z1]], fill);
   const onTop = (z: number, x0: number, x1: number, y0: number, y1: number, fill: string) =>
     poly([[x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z]], fill);
+
+  // Ground: a voxel grass tile centred under the feet, plus a soft contact shadow
+  box(-2.6, 8.6, -4.0, 7.2, -1.8, -0.5, DIRT);
+  box(-2.6, 8.6, -4.0, 7.2, -0.5, 0, GRASS);
+  onTop(0.01, -0.4, 6.4, -0.4, 3.6, "rgba(20, 24, 38, 0.22)");
+  const groundRaw = raw;
+  raw = [];
 
   // Back arm
   box(-1.6, 0, 1, 2.6, 8, 12, p.hoodie);
@@ -137,10 +152,11 @@ export function buildBlocky(p: BlockyPalette): BlockyShape {
   box(7, 7.8, 0, 3.6, 13.6, 17.4, p.accent);
   onSide(7.8, 0.6, 3.0, 14.2, 16.8, p.cupInner);
 
-  const xs = raw.flatMap((r) => r.pts.map((q) => q[0]));
-  const ys = raw.flatMap((r) => r.pts.map((q) => q[1]));
+  const all = [...groundRaw, ...raw];
+  const xs = all.flatMap((r) => r.pts.map((q) => q[0]));
+  const ys = all.flatMap((r) => r.pts.map((q) => q[1]));
   const pad = 2;
-  // Centre the view box on the feet so the character stands in the middle of its platform,
+  // Centre the view box on the feet so the character stands in the middle of its tile,
   // whichever way it faces.
   const [feetX] = P(3, 1.6, 0);
   const half = Math.max(feetX - Math.min(...xs), Math.max(...xs) - feetX) + pad;
@@ -148,9 +164,10 @@ export function buildBlocky(p: BlockyPalette): BlockyShape {
   const minY = Math.min(...ys) - pad;
   const width = half * 2;
   const height = Math.max(...ys) + pad - minY;
-  const polys = raw.map((r) => ({
-    fill: r.fill,
-    points: r.pts.map(([x, y]) => `${(x - minX).toFixed(1)},${(y - minY).toFixed(1)}`).join(" "),
-  }));
-  return { polys, width, height };
+  const toPolys = (list: typeof raw): Poly[] =>
+    list.map((r) => ({
+      fill: r.fill,
+      points: r.pts.map(([x, y]) => `${(x - minX).toFixed(1)},${(y - minY).toFixed(1)}`).join(" "),
+    }));
+  return { ground: toPolys(groundRaw), body: toPolys(raw), width, height };
 }
