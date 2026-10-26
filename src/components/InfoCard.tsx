@@ -6,19 +6,22 @@ import { hpClass } from "../lib/energy";
 interface Props {
   name: string;
   level: number;
-  hp: number;
+  subtitle?: string;
   types?: ProjectType[];
-  footer: string;
+  meterLabel: string;
+  meter: number;
+  tag?: string;
   className?: string;
 }
 
-export function InfoCard({ name, level, hp, types, footer, className = "" }: Props) {
+export function InfoCard({ name, level, subtitle, types, meterLabel, meter, tag, className = "" }: Props) {
   return (
     <div className={`info ${className}`}>
       <div className="info-top">
         <span className="info-name">{name}</span>
         <span className="info-lv">Lv{level}</span>
       </div>
+      {subtitle && <div className="info-sub">{subtitle}</div>}
       {types && (
         <div className="types">
           {types.map((t) => (
@@ -26,11 +29,11 @@ export function InfoCard({ name, level, hp, types, footer, className = "" }: Pro
           ))}
         </div>
       )}
-      <div className="hp">
-        <b>HP</b>
-        <Bar percent={hp} className={hpClass(hp)} />
+      <div className="meter">
+        <b>{meterLabel}</b>
+        <Bar percent={meter} className={hpClass(meter)} />
       </div>
-      <div className="where">{footer}</div>
+      {tag && <div className="open-tag">● {tag}</div>}
     </div>
   );
 }

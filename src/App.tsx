@@ -225,9 +225,16 @@ export default function App() {
     <main className="console">
       <div className="console-top">
         <span className="led">PIXEL QUEST · PORTFOLIO</span>
-        <button className="quick-btn" ref={quickRef} onClick={() => openPanel("quick")}>
-          ≡ QUICK VIEW
-        </button>
+        <div className="top-actions">
+          <button className="quick-btn" ref={quickRef} onClick={() => openPanel("quick")}>
+            QUICK VIEW
+          </button>
+          {profile.cv && (
+            <a className="cv-btn" href={profile.cv} target="_blank" rel="noopener noreferrer">
+              ↓ CV (PDF)
+            </a>
+          )}
+        </div>
       </div>
 
       <div className="screen">

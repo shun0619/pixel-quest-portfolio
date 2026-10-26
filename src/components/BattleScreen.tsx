@@ -1,8 +1,8 @@
 import type { MutableRefObject } from "react";
 import type { CommandKey, Profile } from "../types";
-import { PALETTES } from "../lib/sprite";
+import { BLOCKY_PALETTES } from "../lib/blocky";
 import { energy } from "../lib/energy";
-import { Sprite } from "./Sprite";
+import { Blocky } from "./Blocky";
 import { InfoCard } from "./InfoCard";
 import { CommandMenu } from "./CommandMenu";
 
@@ -32,17 +32,19 @@ export function BattleScreen(props: Props) {
           className="foe-card"
           name={profile.short}
           level={level}
-          hp={hp.value}
+          subtitle={`${profile.role} · ${profile.base.split(",")[0].toUpperCase()}`}
           types={profile.types}
-          footer={`${hp.note} · ${profile.base}`}
+          meterLabel="ENERGY"
+          meter={hp.value}
+          tag={`OPEN TO WORK · ${profile.available.replace(/^From /i, "").toUpperCase()}`}
         />
-        <button className={`sprite foe${hit ? " hit" : ""}`} onClick={props.onPoke} aria-label={`Poke ${profile.short}`}>
-          <Sprite palette={rare ? PALETTES.rare : PALETTES.front} flip />
+        <button className={`sprite foe${hit ? " hit" : ""}`} onClick={props.onPoke} aria-label={`Poke ${profile.short}`} title={hp.note}>
+          <Blocky palette={rare ? BLOCKY_PALETTES.rare : BLOCKY_PALETTES.developer} />
         </button>
         <div className="sprite me" aria-hidden="true">
-          <Sprite palette={PALETTES.visitor} />
+          <Blocky palette={BLOCKY_PALETTES.visitor} flip />
         </div>
-        <InfoCard className="me-card" name="YOU" level={Math.min(visits, 99)} hp={100} footer="CURIOSITY 100/100" />
+        <InfoCard className="me-card" name="YOU" level={Math.min(visits, 99)} meterLabel="CURIOSITY" meter={100} />
       </div>
       <div className="hud">
         <div className="box msg" aria-live="polite" onClick={props.onSkipMessage}>

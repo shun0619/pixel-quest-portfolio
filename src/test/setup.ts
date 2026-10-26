@@ -20,4 +20,4 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 // jsdom has no canvas; sprites simply skip drawing.
-HTMLCanvasElement.prototype.getContext = (() => null) as unknown as HTMLCanvasElement["getContext"];
+HTMLCanvasElement.prototype.getContext = (() => null) as unknown as HTMLCanvasElement["getContext"]; // confetti only

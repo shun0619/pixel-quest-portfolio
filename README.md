@@ -8,7 +8,7 @@ In a hurry? The **QUICK VIEW** button shows everything on one screen.
 
 - React + TypeScript, built with Vite
 - Plain CSS (no UI library) and self-hosted pixel fonts via Fontsource
-- Pixel sprites drawn on `<canvas>`, sound effects synthesized with the Web Audio API
+- An original blocky avatar built from isometric SVG polygons, sound effects synthesized with the Web Audio API
 - Vitest + Testing Library for unit and UI tests
 - GitHub Actions runs type checks, tests and a production build on every push
 
@@ -33,10 +33,10 @@ Set `contact.email` to show an email row with a copy button.
 src/
   App.tsx            screen flow, menu state, keyboard controls
   content.ts         all portfolio content
-  components/        title screen, battle screen, panel, sprite, confetti
+  components/        title screen, battle screen, panel, avatar, confetti
   panels/            projects, skills, history, contact, quick view, secret file
   hooks/             typewriter message box
-  lib/               sound, sprite data, storage, visit counter
+  lib/               sound, blocky avatar geometry, storage, visit counter
 ```
 
 ## Accessibility

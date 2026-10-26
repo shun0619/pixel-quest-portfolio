@@ -58,6 +58,8 @@ export interface Profile {
   seeking: string;
   languages: string;
   summary: string;
+  /** Link to a CV PDF (for example /cv.pdf in public/). Leave empty to hide the CV buttons. */
+  cv: string;
   projects: Project[];
   skills: SkillGroup[];
   history: HistoryItem[];

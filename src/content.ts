@@ -13,6 +13,7 @@ export const profile: Profile = {
   languages: "Japanese (native) · English (business, TOEIC 860)",
   summary:
     "Full-stack engineer with about 3 years of web development in Japan. Built a security token platform for a securities firm with React, NestJS and PostgreSQL on AWS, and a logistics system with Java Spring Boot, Vue.js and MySQL. Comfortable owning a feature from design docs through testing and release. Now studying IT in English in Auckland.",
+  cv: "",
 
   projects: [
     {
@@ -52,7 +53,7 @@ export const profile: Profile = {
       period: "2026",
       types: ["FRONTEND"],
       stack: "TypeScript · React · Vite · Vitest · Web Audio API",
-      desc: "This site. Pixel sprites drawn on canvas, sound effects synthesized in the browser, tested with Vitest.",
+      desc: "This site. A blocky avatar built from SVG polygons, sound effects synthesized in the browser, tested with Vitest.",
       role: "Solo",
       team: "1 person",
       phases: "Design → release",

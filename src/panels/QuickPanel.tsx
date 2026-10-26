@@ -1,69 +1,92 @@
 import type { Profile } from "../types";
+import { BLOCKY_PALETTES } from "../lib/blocky";
+import { Blocky } from "../components/Blocky";
 import { Chip } from "../components/Chip";
 
-/** Plain one-screen summary for visitors who want the facts fast. */
+const yearsLabel = (y: number) => `${y}y`;
+
+/** One-page résumé for visitors who want the facts fast. */
 export function QuickPanel({ profile }: { profile: Profile }) {
+  const linkedIn = profile.contact.links.find((l) => l.label === "LINKEDIN");
+  const gitHub = profile.contact.links.find((l) => l.label === "GITHUB");
   return (
-    <div className="quick">
-      <div>
-        <h3 className="q-name">{profile.name}</h3>
-        <p className="q-role">
-          {profile.role} · {profile.base}
-        </p>
-      </div>
-      <p className="q-lead">{profile.summary}</p>
-      <dl className="meta status">
-        <dt>AVAILABLE</dt>
-        <dd>{profile.available}</dd>
-        <dt>LOOKING FOR</dt>
-        <dd>{profile.seeking}</dd>
-        <dt>LANGUAGES</dt>
-        <dd>{profile.languages}</dd>
-      </dl>
-      <section>
-        <h3 className="section-h">EXPERIENCE & EDUCATION</h3>
-        <ul className="q-list">
-          {profile.history.map((h) => (
-            <li key={h.title}>
-              <span className="yr">{h.year}</span>
-              <div>
-                <b>{h.title}</b>
-                <span>{h.org}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h3 className="section-h">SKILLS</h3>
-        <div className="q-skills">
-          {profile.skills.map((g) => (
-            <div key={g.type}>
-              <Chip type={g.type} />
-              <span>{g.moves.map((m) => m.name).join(", ")}</span>
-            </div>
-          ))}
+    <div className="qv">
+      <header className="qv-hero">
+        <div className="qv-avatar">
+          <Blocky palette={BLOCKY_PALETTES.developer} />
         </div>
-      </section>
-      <section>
-        <h3 className="section-h">CERTIFICATIONS</h3>
-        <ul className="q-list">
-          {profile.badges.map((b) => (
-            <li key={b.name}>
-              <span className="yr">{b.date}</span>
-              <div>
-                <b>{b.name}</b>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <div className="links">
-        {profile.contact.links.map((l) => (
-          <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer">
-            ▶ {l.label}
-          </a>
-        ))}
+        <div className="qv-id">
+          <h3 className="qv-name">{profile.name}</h3>
+          <p className="qv-role">
+            Full-stack engineer · {profile.level} yrs · {profile.base}
+          </p>
+          <ul className="qv-tags" aria-label="Status">
+            <li className="open">● OPEN TO WORK · {profile.available.replace(/^From /i, "").toUpperCase()}</li>
+            <li>{profile.seeking.replace(/^Full-stack roles in /i, "").toUpperCase()}</li>
+            <li>JA NATIVE · EN BUSINESS</li>
+          </ul>
+        </div>
+        <div className="qv-actions">
+          {gitHub && (
+            <a className="qv-btn primary" href={gitHub.url} target="_blank" rel="noopener noreferrer">
+              ▶ GITHUB
+            </a>
+          )}
+          {linkedIn && (
+            <a className="qv-btn" href={linkedIn.url} target="_blank" rel="noopener noreferrer">
+              ▶ LINKEDIN
+            </a>
+          )}
+          {profile.cv && (
+            <a className="qv-btn" href={profile.cv} target="_blank" rel="noopener noreferrer">
+              ↓ CV (PDF)
+            </a>
+          )}
+        </div>
+      </header>
+
+      <div className="qv-cols">
+        <div className="qv-col">
+          <section>
+            <h4 className="section-h">SUMMARY</h4>
+            <p className="qv-lead">{profile.summary}</p>
+          </section>
+          <section>
+            <h4 className="section-h">SKILLS</h4>
+            <ul className="qv-skills">
+              {profile.skills.map((g) => (
+                <li key={g.type}>
+                  <Chip type={g.type} />
+                  <span>{g.moves.map((m) => `${m.name} ${yearsLabel(m.yrs)}`).join(" · ")}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+        <div className="qv-col">
+          <section>
+            <h4 className="section-h">EXPERIENCE & EDUCATION</h4>
+            <ul className="qv-timeline">
+              {profile.history.map((h) => (
+                <li key={h.title}>
+                  <span className="yr">{h.year}</span>
+                  <b>{h.title}</b>
+                  <span className="org">{h.org}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section>
+            <h4 className="section-h">CERTIFICATIONS</h4>
+            <ul className="qv-certs">
+              {profile.badges.map((b) => (
+                <li key={b.name}>
+                  ★ {b.name} <span className="yr">{b.date}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
       </div>
     </div>
   );

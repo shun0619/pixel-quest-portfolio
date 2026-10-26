@@ -1,6 +1,6 @@
 import type { Profile } from "../types";
-import { PALETTES } from "../lib/sprite";
-import { Sprite } from "./Sprite";
+import { BLOCKY_PALETTES } from "../lib/blocky";
+import { Blocky } from "./Blocky";
 
 interface Props {
   profile: Profile;
@@ -10,7 +10,7 @@ interface Props {
 export function TitleScreen({ profile, onStart }: Props) {
   return (
     <section className="title" aria-label="Title screen">
-      <Sprite palette={PALETTES.front} className="title-sprite" />
+      <Blocky palette={BLOCKY_PALETTES.developer} className="title-avatar" />
       <h1>{profile.name}</h1>
       <p className="role">{profile.role}</p>
       <p className="avail">OPEN TO FULL-STACK ROLES · {profile.available.toUpperCase()}</p>
