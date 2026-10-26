@@ -37,10 +37,11 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { min-height: 100%; }
+/* The whole site fits the viewport: no page scroll on desktop or tablet. */
+html { height: 100%; }
 body {
   margin: 0;
-  min-height: 100%;
+  height: 100dvh;
   background: radial-gradient(120% 80% at 50% 0%, var(--bezel-2), var(--bezel) 70%) var(--bezel);
   color: var(--bezel-ink);
   font-family: var(--f-body);
@@ -50,7 +51,7 @@ body {
   font-feature-settings: "liga" 0, "clig" 0;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: max(24px, env(safe-area-inset-top, 0px)) max(32px, env(safe-area-inset-bottom, 0px));
+  padding-block: max(12px, env(safe-area-inset-top, 0px)) max(10px, env(safe-area-inset-bottom, 0px));
 }
 button { font: inherit; color: inherit; cursor: pointer; }
 a { color: inherit; }
@@ -59,7 +60,7 @@ img, canvas { max-width: 100%; }
 [hidden] { display: none !important; }
 
 /* ---------- Console ---------- */
-.console { max-width: 780px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.console { max-width: 780px; height: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
 .console-top {
   display: flex; justify-content: space-between; align-items: center; gap: 12px;
   font-family: var(--f-display); font-size: 10px; letter-spacing: .08em; color: var(--bezel-mute);
@@ -77,6 +78,7 @@ img, canvas { max-width: 100%; }
 .cv-btn:hover { background: var(--bezel-2); }
 
 .screen {
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
   position: relative; overflow: hidden; color-scheme: light;
   background: linear-gradient(var(--sky-top), var(--sky-bot)); color: var(--ink);
   border: 4px solid var(--ink); border-radius: 8px;
@@ -85,11 +87,11 @@ img, canvas { max-width: 100%; }
 
 /* ---------- Title ---------- */
 .title {
-  min-height: 520px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 22px; padding: 32px 16px; text-align: center;
+  flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(10px, 2.4vh, 22px); padding: 20px 16px; text-align: center;
   background: repeating-linear-gradient(0deg, transparent 0 6px, rgba(27, 31, 42, .035) 6px 7px), linear-gradient(var(--sky-top), var(--sky-bot));
 }
-.title-avatar { height: clamp(180px, 42vw, 240px); width: auto; max-width: 100%; animation: bob 1.6s steps(2) infinite; }
+.title-avatar { height: clamp(110px, 28vh, 240px); width: auto; max-width: 100%; animation: bob 1.6s steps(2) infinite; }
 .title h1 { font-family: var(--f-display); font-size: clamp(18px, 5vw, 30px); line-height: 1.35; margin: 0; text-wrap: balance; text-shadow: 3px 3px 0 var(--pad); }
 .title .role { font-family: var(--f-display); font-size: 12px; letter-spacing: .14em; color: var(--frame); margin: 0; }
 .avail {
@@ -102,8 +104,8 @@ img, canvas { max-width: 100%; }
 .title small { font-family: var(--f-display); font-size: 10px; color: var(--mute); letter-spacing: .08em; }
 
 /* ---------- Battle ---------- */
-.battle { min-height: 520px; display: flex; flex-direction: column; }
-.field { flex: 1; background: linear-gradient(var(--sky-top), var(--sky-bot) 32%, var(--ground) 32%, var(--sky-bot) 100%); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 6px 12px; padding: 18px 18px 10px; }
+.battle { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.field { flex: 1; background: linear-gradient(var(--sky-top), var(--sky-bot) 32%, var(--ground) 32%, var(--sky-bot) 100%); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr) minmax(0, 1.25fr); gap: 4px 12px; padding: 14px 18px 8px; min-height: 0; }
 .foe-card { grid-area: 1 / 1; align-self: start; }
 .foe { grid-area: 1 / 2; justify-self: center; }
 .me { grid-area: 2 / 1; justify-self: center; align-self: end; }
@@ -114,8 +116,8 @@ img, canvas { max-width: 100%; }
 .sprite::before { content: ""; position: absolute; left: -18%; right: -18%; bottom: 0; height: 30px; border-radius: 50%; background: var(--pad); border: 3px solid var(--pad-edge); }
 .sprite svg { position: relative; display: block; width: auto; max-width: none; animation: bob 1.4s steps(2) infinite; }
 .sprite svg { margin-bottom: -2px; }
-.foe svg { height: clamp(130px, 24vw, 176px); }
-.me svg { height: clamp(176px, 36vw, 250px); animation-delay: .7s; }
+.foe svg { height: clamp(90px, 19vh, 176px); }
+.me svg { height: clamp(120px, 27vh, 250px); animation-delay: .7s; }
 .me { padding-bottom: 20px; }
 .me::before { height: 42px; left: -22%; right: -22%; }
 .foe.hit svg { animation: shake .3s steps(3); }
@@ -146,7 +148,7 @@ img, canvas { max-width: 100%; }
 
 .hud { display: grid; grid-template-columns: 1.6fr 1fr; gap: 8px; background: var(--frame); padding: 8px; border-top: 4px solid var(--ink); }
 .box { background: var(--paper); border: 3px solid var(--ink); border-radius: 6px; box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 5px #a9b4cf; }
-.msg { padding: 16px 18px; min-height: 108px; font-size: 20px; line-height: 1.4; cursor: pointer; position: relative; }
+.msg { padding: 14px 18px; min-height: 96px; font-size: 20px; line-height: 1.4; cursor: pointer; position: relative; }
 .msg::after { content: "▼"; position: absolute; right: 12px; bottom: 8px; font-size: 10px; color: var(--accent); animation: blink 1s steps(1) infinite; }
 .cmds { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; }
 .cmd { background: none; border: 0; text-align: left; padding: 10px 6px 10px 24px; position: relative; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; }
@@ -271,14 +273,15 @@ kbd { font-family: var(--f-display); font-size: 10px; border: 1px solid #3b4664;
 
 @media (max-width: 600px) {
   .hud { grid-template-columns: 1fr; }
-  .msg { min-height: 86px; font-size: 17px; }
+  .msg { min-height: 72px; font-size: 17px; padding: 10px 14px; }
+  .console-foot .keys { display: none; }
+  .cmd { padding-block: 7px; }
   .field { padding: 14px 12px 8px; }
   .info { padding: 8px 10px 10px; }
   .info-name { font-size: 10px; }
   .skill-row { grid-template-columns: 1fr; gap: 6px; }
   .log li { grid-template-columns: 1fr; }
   .log .org { grid-column: 1; }
-  .battle, .title { min-height: 500px; }
   .qv-hero { grid-template-columns: auto minmax(0, 1fr); }
   .qv-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; }
   .qv-cols { grid-template-columns: 1fr; }
@@ -286,4 +289,11 @@ kbd { font-family: var(--f-display); font-size: 10px; border: 1px solid #3b4664;
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Very short windows: let the page scroll rather than squash the screen. */
+@media (max-height: 560px) {
+  body { height: auto; }
+  .console { height: auto; }
+  .battle, .title { min-height: 520px; }
 }
