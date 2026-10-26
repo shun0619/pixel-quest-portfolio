@@ -9,17 +9,14 @@ export function HistoryPanel({ history, badges }: { history: HistoryItem[]; badg
             <span className="yr">{h.year}</span>
             <h3>{h.title}</h3>
             <span className="org">{h.org}</span>
-            <p>{h.desc}</p>
           </li>
         ))}
       </ol>
-      <h3 className="section-h">BADGES</h3>
-      <ul className="badges">
+      <ul className="badges" aria-label="Certifications">
         {badges.map((b) => (
           <li key={b.name}>
             <span className="medal" aria-hidden="true" />
-            <span>{b.name}</span>
-            <span className="yr">{b.date}</span>
+            {b.name} <span className="yr">{b.date}</span>
           </li>
         ))}
       </ul>

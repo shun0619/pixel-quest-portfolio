@@ -3,8 +3,6 @@ import { BLOCKY_PALETTES } from "../lib/blocky";
 import { Blocky } from "../components/Blocky";
 import { Chip } from "../components/Chip";
 
-const yearsLabel = (y: number) => `${y}y`;
-
 /** One-page résumé for visitors who want the facts fast. */
 export function QuickPanel({ profile }: { profile: Profile }) {
   const linkedIn = profile.contact.links.find((l) => l.label === "LINKEDIN");
@@ -57,7 +55,7 @@ export function QuickPanel({ profile }: { profile: Profile }) {
               {profile.skills.map((g) => (
                 <li key={g.type}>
                   <Chip type={g.type} />
-                  <span>{g.moves.map((m) => `${m.name} ${yearsLabel(m.yrs)}`).join(" · ")}</span>
+                  <span>{g.moves.map((m) => m.name).join(" · ")}</span>
                 </li>
               ))}
             </ul>
@@ -78,13 +76,7 @@ export function QuickPanel({ profile }: { profile: Profile }) {
           </section>
           <section>
             <h4 className="section-h">CERTIFICATIONS</h4>
-            <ul className="qv-certs">
-              {profile.badges.map((b) => (
-                <li key={b.name}>
-                  ★ {b.name} <span className="yr">{b.date}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="qv-certs">{profile.badges.map((b) => `★ ${b.name} (${b.date})`).join("   ")}</p>
           </section>
         </div>
       </div>

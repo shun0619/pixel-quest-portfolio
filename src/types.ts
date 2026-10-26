@@ -5,12 +5,9 @@ export interface Project {
   name: string;
   period: string;
   types: ProjectType[];
+  /** One sentence. */
+  summary: string;
   stack: string;
-  desc: string;
-  role: string;
-  team: string;
-  phases: string;
-  notes: string[];
   live?: string;
   code?: string;
   /** Client work whose code cannot be shared. */
@@ -33,7 +30,6 @@ export interface HistoryItem {
   year: string;
   title: string;
   org: string;
-  desc: string;
 }
 
 export interface Badge {

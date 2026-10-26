@@ -16,20 +16,7 @@ export function ProjectsPanel({ projects }: { projects: Project[] }) {
               <Chip key={t} type={t} />
             ))}
           </div>
-          <p>{p.desc}</p>
-          <dl className="meta">
-            <dt>ROLE</dt>
-            <dd>{p.role}</dd>
-            <dt>TEAM</dt>
-            <dd>{p.team}</dd>
-            <dt>PHASES</dt>
-            <dd>{p.phases}</dd>
-          </dl>
-          <ul className="notes">
-            {p.notes.map((n) => (
-              <li key={n}>{n}</li>
-            ))}
-          </ul>
+          <p>{p.summary}</p>
           <div className="stack">{p.stack}</div>
           <div className="links">
             {p.live && (
@@ -42,7 +29,7 @@ export function ProjectsPanel({ projects }: { projects: Project[] }) {
                 ▶ CODE
               </a>
             )}
-            {p.private && <span className="private">CLIENT WORK · CODE PRIVATE</span>}
+            {p.private && <span className="private">CLIENT WORK</span>}
           </div>
         </article>
       ))}
