@@ -1,7 +1,6 @@
 import type { Profile } from "../types";
 import { BLOCKY_PALETTES } from "../lib/blocky";
 import { Blocky } from "../components/Blocky";
-import { Chip } from "../components/Chip";
 
 /** One-page résumé for visitors who want the facts fast. */
 export function QuickPanel({ profile }: { profile: Profile }) {
@@ -51,14 +50,12 @@ export function QuickPanel({ profile }: { profile: Profile }) {
           </section>
           <section>
             <h4 className="section-h">SKILLS</h4>
-            <ul className="qv-skills">
-              {profile.skills.map((g) => (
-                <li key={g.type}>
-                  <Chip type={g.type} />
-                  <span>{g.moves.map((m) => m.name).join(" · ")}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="qv-lead">
+              {profile.skills
+                .filter((sk) => !sk.joke)
+                .map((sk) => sk.name)
+                .join(" · ")}
+            </p>
           </section>
         </div>
         <div className="qv-col">

@@ -20,7 +20,6 @@ import { SecretPanel } from "./panels/SecretPanel";
 const IDLE = "What will you check out?";
 const POKES_TO_UNLOCK = 5;
 const name = profile.short;
-const moveCount = profile.skills.reduce((sum, g) => sum + g.moves.length, 0);
 
 const POKE_LINES = [
   `${name} dodged! The menu works better.`,
@@ -31,7 +30,7 @@ const POKE_LINES = [
 
 const INTRO: Record<PanelKey, string> = {
   projects: `Your project log has ${profile.projects.length} entries. Pick one to inspect.`,
-  skills: `${name} knows ${moveCount} moves. Select a move to see what it does.`,
+  skills: `You checked ${name}'s stats.`,
   history: `You opened the key items pocket. ${profile.history.length} items and ${profile.badges.length} badges inside.`,
   contact: `${name} is looking at you expectantly.`,
   quick: "The short version. Press START on the title screen for the full adventure.",
@@ -186,16 +185,8 @@ export default function App() {
     },
     skills: {
       title: "SKILLS",
-      count: `${moveCount} MOVES`,
-      body: () => (
-        <SkillsPanel
-          groups={profile.skills}
-          onMove={(m) => {
-            sound.select();
-            void panelMsg.play([`${name} used ${m.name}!`, m.desc]);
-          }}
-        />
-      ),
+      count: "STATS",
+      body: () => <SkillsPanel skills={profile.skills} />,
     },
     history: {
       title: "HISTORY",

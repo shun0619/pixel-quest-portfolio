@@ -43,44 +43,14 @@ export const profile: Profile = {
   ],
 
   skills: [
-    {
-      type: "LANGUAGE",
-      moves: [
-        { name: "TypeScript", yrs: 3, desc: "Main language for React frontends and NestJS APIs." },
-        { name: "Java", yrs: 2, desc: "Backend logic with Spring Boot." },
-        { name: "SQL", yrs: 3, desc: "Schema design and query tuning." },
-      ],
-    },
-    {
-      type: "FRAMEWORK",
-      moves: [
-        { name: "React", yrs: 1, desc: "Frontend of a security token platform." },
-        { name: "NestJS", yrs: 1, desc: "Backend APIs in TypeScript." },
-        { name: "Spring Boot", yrs: 2, desc: "Backend for a logistics system." },
-        { name: "Vue.js", yrs: 2, desc: "Frontend screens and UI improvements." },
-      ],
-    },
-    {
-      type: "DATABASE",
-      moves: [
-        { name: "PostgreSQL", yrs: 1, desc: "Database design with Prisma ORM." },
-        { name: "MySQL", yrs: 2, desc: "Database design and query optimisation." },
-      ],
-    },
-    {
-      type: "INFRA",
-      moves: [
-        { name: "AWS", yrs: 1, desc: "Development and releases on ECS and ECR." },
-        { name: "Docker", yrs: 3, desc: "Containerised development on every project." },
-      ],
-    },
-    {
-      type: "TESTING",
-      moves: [
-        { name: "Jest", yrs: 1, desc: "Unit tests kept in sync with the specs." },
-        { name: "JUnit", yrs: 2, desc: "Unit tests for Spring Boot services." },
-      ],
-    },
+    { name: "TYPESCRIPT", power: 88, line: "Catches bugs before they hatch." },
+    { name: "REACT", power: 80, line: "Builds screens one component at a time." },
+    { name: "NESTJS", power: 74, line: "Summons tidy APIs with a few decorators." },
+    { name: "SPRING BOOT", power: 72, line: "Moves warehouse stock without dropping a box." },
+    { name: "SQL", power: 82, line: "Asks the database the right question, fast." },
+    { name: "DOCKER & AWS", power: 70, line: "Ships the same box to every server." },
+    { name: "TESTING", power: 86, line: "Writes the spec, then proves it." },
+    { name: "MATCHA", power: 99, line: "Restores focus after long code reviews.", joke: true },
   ],
 
   history: [

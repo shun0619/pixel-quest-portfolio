@@ -44,12 +44,14 @@ describe("battle menu", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("describes a skill when it is selected", async () => {
+  it("shows every skill with its one-liner", async () => {
     const user = await startGame();
     await user.click(screen.getByRole("menuitem", { name: /skills/i }));
-    const move = profile.skills[0].moves[0];
-    await user.click(screen.getByRole("button", { name: new RegExp(move.name.replace(/[/()]/g, "."), "i") }));
-    expect(await screen.findByText(move.desc)).toBeInTheDocument();
+    const dialog = screen.getByRole("dialog", { name: "SKILLS" });
+    for (const s of profile.skills) {
+      expect(within(dialog).getByText(s.name)).toBeInTheDocument();
+      expect(within(dialog).getByText(`▸ ${s.line}`)).toBeInTheDocument();
+    }
   });
 
   it("closes a panel with Escape", async () => {

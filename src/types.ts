@@ -1,4 +1,3 @@
-export type SkillType = "LANGUAGE" | "FRAMEWORK" | "DATABASE" | "INFRA" | "TESTING" | "TOOLS";
 export type ProjectType = "FRONTEND" | "BACKEND" | "DATA" | "DESIGN";
 
 export interface Project {
@@ -14,16 +13,14 @@ export interface Project {
   private?: boolean;
 }
 
-export interface Move {
+export interface Skill {
   name: string;
-  /** Years of experience. */
-  yrs: number;
-  desc: string;
-}
-
-export interface SkillGroup {
-  type: SkillType;
-  moves: Move[];
+  /** Bar length, 0–100. A feel, not a measurement. */
+  power: number;
+  /** One playful line. */
+  line: string;
+  /** Just for fun; left out of the Quick View. */
+  joke?: boolean;
 }
 
 export interface HistoryItem {
@@ -57,7 +54,7 @@ export interface Profile {
   /** Link to a CV PDF (for example /cv.pdf in public/). Leave empty to hide the CV buttons. */
   cv: string;
   projects: Project[];
-  skills: SkillGroup[];
+  skills: Skill[];
   history: HistoryItem[];
   badges: Badge[];
   contact: {
