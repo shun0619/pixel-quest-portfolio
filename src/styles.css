@@ -5,13 +5,15 @@
   --bezel-2: #283149;
   --bezel-ink: #c9d3ea;
   --bezel-mute: #a3aecb;
-  --sky-top: #e2f4f1;
-  --sky-bot: #c4e7dc;
-  --pad: #a9d790;
-  --pad-edge: #6fa457;
+  --sky-top: #bfe8de;
+  --sky-bot: #8fd3bd;
+  --horizon: #6fbf86;
+  --pad: #eadbb2;
+  --pad-spot: #d6c08d;
+  --pad-edge: #7fb35f;
   --ground: #bfe2c9;
-  --meadow-top: #bfe5ae;
-  --meadow-bot: #a3d58f;
+  --meadow-top: #b6e39a;
+  --meadow-bot: #8fcf6c;
   --open-bg: #d8f3df;
   --open-ink: #1f6b3a;
   --ink: #1b1f2a;
@@ -100,7 +102,7 @@ img, canvas { max-width: 100%; }
 .title .role { font-family: var(--f-display); font-size: 12px; letter-spacing: .14em; color: var(--frame); margin: 0; }
 .avail {
   font-family: var(--f-display); font-size: 10px; letter-spacing: .08em; line-height: 1.6;
-  background: var(--pad); border: 2px solid var(--pad-edge); padding: 7px 10px; border-radius: 3px; margin: 0;
+  background: var(--open-bg); color: var(--open-ink); border: 2px solid #8fcf9f; padding: 7px 10px; border-radius: 3px; margin: 0;
 }
 .start { font-family: var(--f-display); font-size: 12px; background: var(--ink); color: var(--paper); border: 0; padding: 14px 20px; border-radius: 4px; box-shadow: 4px 4px 0 var(--accent); }
 .start span { animation: blink 1s steps(1) infinite; }
@@ -109,27 +111,51 @@ img, canvas { max-width: 100%; }
 
 /* ---------- Battle ---------- */
 .battle { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-/* Battle field: banded sky over a striped meadow, horizon a little below the middle.
-   Developer stands far right on the horizon; the visitor is close, bottom left, cropped by the HUD. */
+/* Battle field, laid out like a classic handheld battle scene:
+   streaked sky over a streaked meadow; the developer stands far right on an oval platform with
+   his card top-left; the visitor is seen from behind, close, bottom-left, cropped by the HUD. */
 .field {
   position: relative; flex: 1; min-height: 240px; overflow: hidden;
   background:
-    repeating-linear-gradient(180deg, rgba(255, 255, 255, .3) 0 2px, transparent 2px 13px) top / 100% 44% no-repeat,
-    repeating-linear-gradient(180deg, rgba(79, 140, 62, .13) 0 3px, transparent 3px 17px) bottom / 100% 56% no-repeat,
-    linear-gradient(var(--sky-top), var(--sky-bot) 44%, var(--meadow-top) 44%, var(--meadow-bot) 100%);
+    linear-gradient(90deg, transparent 8%, rgba(255, 255, 255, .55) 8% 40%, transparent 40% 58%, rgba(255, 255, 255, .45) 58% 92%, transparent 92%) 0 9% / 100% 3px no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, .4) 0 22%, transparent 22% 47%, rgba(255, 255, 255, .5) 47% 80%, transparent 80%) 0 19% / 100% 4px no-repeat,
+    linear-gradient(90deg, transparent 15%, rgba(255, 255, 255, .45) 15% 66%, transparent 66%) 0 29% / 100% 3px no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, .35) 0 30%, transparent 30% 52%, rgba(255, 255, 255, .35) 52% 100%) 0 52% / 100% 4px no-repeat,
+    linear-gradient(90deg, transparent 10%, rgba(255, 255, 255, .3) 10% 72%, transparent 72%) 0 66% / 100% 5px no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, .28) 0 40%, transparent 40% 60%, rgba(255, 255, 255, .28) 60% 100%) 0 82% / 100% 6px no-repeat,
+    linear-gradient(var(--sky-top), var(--sky-bot) 38%, var(--horizon) 38% 40%, var(--meadow-top) 40%, var(--meadow-bot) 100%);
 }
-.foe-card { position: absolute; z-index: 2; top: 4%; left: 3%; width: min(46%, 340px); }
-.foe { position: absolute; z-index: 1; right: 13%; top: 19%; }
-.me { position: absolute; z-index: 1; left: 12%; bottom: -12%; }
-.me-card { position: absolute; z-index: 2; right: 3%; bottom: 7%; width: min(44%, 320px); }
+.foe-card { position: absolute; z-index: 2; top: 6%; left: 3%; width: min(46%, 340px); }
+.me-card { position: absolute; z-index: 2; right: 3%; bottom: 6%; width: min(44%, 320px); }
+/* Little pointers, like a speech tail, aiming each card at its character. */
+.foe-card::after, .me-card::after { content: ""; position: absolute; top: 50%; width: 0; height: 0; border: 9px solid transparent; transform: translateY(-50%); }
+.foe-card::after { right: -21px; border-left-color: var(--ink); }
+.me-card::after { left: -21px; border-right-color: var(--ink); }
 
-.sprite { padding: 0; background: none; border: 0; display: flex; justify-content: center; }
-.sprite svg { display: block; width: auto; max-width: none; overflow: visible; }
+.foe { position: absolute; z-index: 1; left: 72%; top: 47%; transform: translate(-50%, -100%); }
+.me { position: absolute; z-index: 1; left: 24%; bottom: -9%; transform: translateX(-50%); }
+
+.sprite { padding: 0; background: none; border: 0; display: block; }
+.sprite svg { position: relative; display: block; width: auto; max-width: none; overflow: visible; }
+/* Oval dirt platform centred on the feet. */
+.sprite::before {
+  content: ""; position: absolute; left: 50%; bottom: 0; width: 230%; aspect-ratio: 4 / 1;
+  transform: translate(-50%, 50%); border-radius: 50%;
+  background:
+    radial-gradient(circle at 22% 40%, var(--pad-spot) 0 4%, transparent 5%),
+    radial-gradient(circle at 70% 62%, var(--pad-spot) 0 3%, transparent 4%),
+    radial-gradient(circle at 48% 78%, var(--pad-spot) 0 3%, transparent 4%),
+    radial-gradient(circle at 84% 34%, var(--pad-spot) 0 2.5%, transparent 3.5%),
+    var(--pad);
+  border: 3px solid var(--pad-edge);
+}
+.me::before { width: 250%; }
 .sprite .blocky-body { animation: bob 1.4s steps(2) infinite; }
 .me .blocky-body { animation-delay: .7s; }
-.foe svg { height: clamp(120px, 27vh, 230px); }
-.me svg { height: clamp(150px, 35vh, 300px); }
+.foe svg { height: clamp(110px, 25vh, 210px); }
+.me svg { height: clamp(170px, 44vh, 360px); }
 .foe.hit .blocky-body { animation: shake .3s steps(3); }
+.reading { font-family: var(--f-display); font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
 
 .info {
   background: var(--paper); border: 3px solid var(--ink); border-radius: 4px 16px 4px 16px;
@@ -250,7 +276,7 @@ img, canvas { max-width: 100%; }
 .qv-timeline .yr { font-family: var(--f-display); font-size: 10px; color: var(--mute); }
 .qv-timeline b { font-size: 16px; font-weight: 700; }
 .qv-timeline .org { font-size: 15px; color: var(--mute); }
-.qv-certs { margin: 0; font-size: 16px; line-height: 1.5; white-space: pre-wrap; }
+.qv-certs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 16px; line-height: 1.5; }
 
 .secret dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; margin: 0; }
 .secret-row { display: contents; }
@@ -261,8 +287,8 @@ img, canvas { max-width: 100%; }
 .flash.go { animation: flash .9s steps(1); }
 .confetti { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
 
-.enter .foe { animation: slideR .6s steps(8) both; }
-.enter .me { animation: slideL .6s steps(8) both; }
+.enter .foe svg { animation: slideR .6s steps(8) both; }
+.enter .me svg { animation: slideL .6s steps(8) both; }
 .enter .info { animation: pop .4s .5s steps(4) both; }
 
 .console-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 15px; color: var(--bezel-mute); }
@@ -283,9 +309,12 @@ kbd { font-family: var(--f-display); font-size: 10px; border: 1px solid #3b4664;
   .msg { min-height: 72px; font-size: 17px; padding: 10px 14px; }
   .console-foot .keys { display: none; }
   .cmd { padding-block: 7px; }
-  .foe-card, .me-card { width: 54%; }
-  .foe { right: 4%; top: 30%; }
-  .me { left: 2%; }
+  .foe-card, .me-card { width: 56%; }
+  .foe-card::after, .me-card::after { display: none; }
+  .foe { left: 74%; top: 60%; }
+  .foe svg { height: clamp(90px, 17vh, 150px); }
+  .me { left: 26%; bottom: -6%; }
+  .me svg { height: clamp(140px, 30vh, 240px); }
   .info-sub { font-size: 12px; }
   .types { display: none; }
   .info { padding: 8px 10px 10px; }

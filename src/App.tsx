@@ -281,7 +281,7 @@ export default function App() {
           ♪ SOUND: {soundOn ? "ON" : "OFF"}
         </button>
         <span className="keys">
-          <kbd>↑↓←→</kbd> move · <kbd>Enter</kbd> select · <kbd>Esc</kbd> back
+          <kbd>Arrows</kbd> move · <kbd>Enter</kbd> select · <kbd>Esc</kbd> back
         </span>
       </div>
     </main>

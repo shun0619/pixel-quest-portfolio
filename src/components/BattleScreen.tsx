@@ -42,9 +42,9 @@ export function BattleScreen(props: Props) {
           <Blocky palette={rare ? BLOCKY_PALETTES.rare : BLOCKY_PALETTES.developer} />
         </button>
         <div className="sprite me" aria-hidden="true">
-          <Blocky palette={BLOCKY_PALETTES.visitor} flip />
+          <Blocky palette={BLOCKY_PALETTES.visitor} view="back" />
         </div>
-        <InfoCard className="me-card" name="YOU" level={Math.min(visits, 99)} meterLabel="CURIOSITY" meter={100} />
+        <InfoCard className="me-card" name="YOU" level={Math.min(visits, 99)} meterLabel="CURIOSITY" meter={100} reading="100 / 100" />
       </div>
       <div className="hud">
         <div className="box msg" aria-live="polite" onClick={props.onSkipMessage}>

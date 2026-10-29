@@ -11,10 +11,12 @@ interface Props {
   meterLabel: string;
   meter: number;
   tag?: string;
+  /** Number shown under the meter, like "100 / 100". */
+  reading?: string;
   className?: string;
 }
 
-export function InfoCard({ name, level, subtitle, types, meterLabel, meter, tag, className = "" }: Props) {
+export function InfoCard({ name, level, subtitle, types, meterLabel, meter, tag, reading, className = "" }: Props) {
   return (
     <div className={`info ${className}`}>
       <div className="info-top">
@@ -33,6 +35,7 @@ export function InfoCard({ name, level, subtitle, types, meterLabel, meter, tag,
         <b>{meterLabel}</b>
         <Bar percent={meter} className={hpClass(meter)} />
       </div>
+      {reading && <div className="reading">{reading}</div>}
       {tag && <div className="open-tag">● {tag}</div>}
     </div>
   );

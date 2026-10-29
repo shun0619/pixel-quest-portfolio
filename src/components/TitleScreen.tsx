@@ -10,7 +10,7 @@ interface Props {
 export function TitleScreen({ profile, onStart }: Props) {
   return (
     <section className="title" aria-label="Title screen">
-      <Blocky palette={BLOCKY_PALETTES.developer} className="title-avatar" />
+      <Blocky palette={BLOCKY_PALETTES.developer} tile className="title-avatar" />
       <h1>{profile.name}</h1>
       <p className="role">{profile.role}</p>
       <p className="avail">OPEN TO FULL-STACK ROLES · {profile.available.toUpperCase()}</p>

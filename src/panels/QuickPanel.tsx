@@ -10,7 +10,7 @@ export function QuickPanel({ profile }: { profile: Profile }) {
     <div className="qv">
       <header className="qv-hero">
         <div className="qv-avatar">
-          <Blocky palette={BLOCKY_PALETTES.developer} ground={false} />
+          <Blocky palette={BLOCKY_PALETTES.developer} />
         </div>
         <div className="qv-id">
           <h3 className="qv-name">{profile.name}</h3>
@@ -57,6 +57,16 @@ export function QuickPanel({ profile }: { profile: Profile }) {
                 .join(" · ")}
             </p>
           </section>
+          <section>
+            <h4 className="section-h">CERTIFICATIONS</h4>
+            <ul className="qv-certs">
+              {profile.badges.map((b) => (
+                <li key={b.name}>
+                  ★ {b.name} ({b.date})
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
         <div className="qv-col">
           <section>
@@ -71,10 +81,7 @@ export function QuickPanel({ profile }: { profile: Profile }) {
               ))}
             </ul>
           </section>
-          <section>
-            <h4 className="section-h">CERTIFICATIONS</h4>
-            <p className="qv-certs">{profile.badges.map((b) => `★ ${b.name} (${b.date})`).join("   ")}</p>
-          </section>
+
         </div>
       </div>
     </div>
