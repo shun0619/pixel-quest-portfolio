@@ -39,10 +39,10 @@ export function BattleScreen(props: Props) {
           tag={`OPEN TO WORK · ${profile.available.replace(/^From /i, "").toUpperCase()}`}
         />
         <button className={`sprite foe${hit ? " hit" : ""}`} onClick={props.onPoke} aria-label={`Poke ${profile.short}`} title={hp.note}>
-          <Blocky palette={rare ? BLOCKY_PALETTES.rare : BLOCKY_PALETTES.developer} />
+          <Blocky palette={rare ? BLOCKY_PALETTES.rare : BLOCKY_PALETTES.developer} platform={10} />
         </button>
         <div className="sprite me" aria-hidden="true">
-          <Blocky palette={BLOCKY_PALETTES.visitor} view="back" />
+          <Blocky palette={BLOCKY_PALETTES.visitor} view="back" platform={10} />
         </div>
         <InfoCard className="me-card" name="YOU" level={Math.min(visits, 99)} meterLabel="CURIOSITY" meter={100} reading="100 / 100" />
       </div>

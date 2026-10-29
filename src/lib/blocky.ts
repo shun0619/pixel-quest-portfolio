@@ -22,14 +22,38 @@ export type BlockyView = "front" | "back";
 
 type Poly = { points: string; fill: string };
 
+export interface Ellipse {
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+}
+
 export interface BlockyShape {
   /** Optional grass tile under the character. */
   ground: Poly[];
-  /** Contact shadow and the character itself. */
+  /** Optional round platform, projected like the character so they share one camera. */
+  platform?: Ellipse & { depth: number };
+  /** Soft shadow under the feet. */
+  shadow: Ellipse;
+  /** The character itself. */
   body: Poly[];
   width: number;
   height: number;
 }
+
+export interface BlockyOptions {
+  view?: BlockyView;
+  /** Square grass tile under the character. */
+  tile?: boolean;
+  /** Radius (in model units) of a round platform centred on the feet. */
+  platform?: number;
+}
+
+/** A circle of radius r on the ground projects to an ellipse with these semi-axes. */
+const ISO_RX = 1.2247;
+const ISO_RY = 0.7071;
+const PLATFORM_DEPTH = 1.1;
 
 type Box = [x0: number, x1: number, y0: number, y1: number, z0: number, z1: number];
 /** Rectangle on a vertical face: [from, to, z0, z1, colour]. */
@@ -169,7 +193,7 @@ function model(p: BlockyPalette): Part[] {
 const GRASS: Shade = ["#a9d790", "#7fbf63", "#5f9d4b"];
 const DIRT: Shade = ["#8a6a4a", "#8a6a4a", "#6e5238"];
 
-export function buildBlocky(p: BlockyPalette, view: BlockyView = "front", withTile = false): BlockyShape {
+export function buildBlocky(p: BlockyPalette, { view = "front", tile = false, platform }: BlockyOptions = {}): BlockyShape {
   type Raw = { pts: [number, number][]; fill: string };
   const back = view === "back";
   const P = (x: number, y: number, z: number): [number, number] => [(x - y) * COS30 * UNIT, (x + y) * 0.5 * UNIT - z * UNIT];
@@ -184,15 +208,15 @@ export function buildBlocky(p: BlockyPalette, view: BlockyView = "front", withTi
   const turn = ([x0, x1, y0, y1, z0, z1]: Box): Box => (back ? [-x1, -x0, -y1, -y0, z0, z1] : [x0, x1, y0, y1, z0, z1]);
   const flipRange = (a: number, b: number): [number, number] => (back ? [-b, -a] : [a, b]);
 
-  if (withTile) {
+  if (tile) {
     box(turn([-2.6, 8.6, -4.0, 7.2, -1.8, -0.5]), ...DIRT);
     box(turn([-2.6, 8.6, -4.0, 7.2, -0.5, 0]), ...GRASS);
   }
   const ground = out;
   out = [];
 
-  const [sx0, sx1, sy0, sy1] = turn([-0.4, 6.4, -0.4, 3.6, 0, 0]);
-  quad([[sx0, sy0, 0.01], [sx1, sy0, 0.01], [sx1, sy1, 0.01], [sx0, sy1, 0.01]], "rgba(20, 24, 38, 0.28)");
+  // Everything on the ground is centred on the middle of the footprint.
+  const [footX, footY] = back ? P(-3, -1.6, 0) : P(3, 1.6, 0);
 
   // Painter's algorithm: the viewer looks along (1, 1, 1), so a larger x + y + z is closer.
   const parts = model(p)
@@ -222,16 +246,29 @@ export function buildBlocky(p: BlockyPalette, view: BlockyView = "front", withTi
   const all = [...ground, ...out];
   const xs = all.flatMap((r) => r.pts.map((q) => q[0]));
   const ys = all.flatMap((r) => r.pts.map((q) => q[1]));
+  const disc = platform ? { rx: platform * ISO_RX * UNIT, ry: platform * ISO_RY * UNIT, depth: PLATFORM_DEPTH * UNIT } : null;
+  if (disc) {
+    xs.push(footX - disc.rx, footX + disc.rx);
+    ys.push(footY - disc.ry, footY + disc.ry + disc.depth);
+  }
   const pad = 2;
   // Centre the view box on the feet so the character stands in the middle of its platform.
-  const [feetX] = back ? P(-3, -1.6, 0) : P(3, 1.6, 0);
-  const half = Math.max(feetX - Math.min(...xs), Math.max(...xs) - feetX) + pad;
-  const minX = feetX - half;
+  const half = Math.max(footX - Math.min(...xs), Math.max(...xs) - footX) + pad;
+  const minX = footX - half;
   const minY = Math.min(...ys) - pad;
   const toPolys = (list: Raw[]): Poly[] =>
     list.map((r) => ({
       fill: r.fill,
       points: r.pts.map(([x, y]) => `${(x - minX).toFixed(1)},${(y - minY).toFixed(1)}`).join(" "),
     }));
-  return { ground: toPolys(ground), body: toPolys(out), width: half * 2, height: Math.max(...ys) + pad - minY };
+  const cx = footX - minX;
+  const cy = footY - minY;
+  return {
+    ground: toPolys(ground),
+    platform: disc ? { cx, cy, ...disc } : undefined,
+    shadow: { cx, cy, rx: 3.6 * ISO_RX * UNIT, ry: 3.6 * ISO_RY * UNIT },
+    body: toPolys(out),
+    width: half * 2,
+    height: Math.max(...ys) + pad - minY,
+  };
 }

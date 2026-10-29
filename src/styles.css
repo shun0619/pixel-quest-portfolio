@@ -132,28 +132,15 @@ img, canvas { max-width: 100%; }
 .foe-card::after { right: -21px; border-left-color: var(--ink); }
 .me-card::after { left: -21px; border-right-color: var(--ink); }
 
-.foe { position: absolute; z-index: 1; left: 72%; top: 47%; transform: translate(-50%, -100%); }
-.me { position: absolute; z-index: 1; left: 24%; bottom: -9%; transform: translateX(-50%); }
+.foe { position: absolute; z-index: 1; left: 72%; top: 58%; transform: translate(-50%, -100%); }
+.me { position: absolute; z-index: 1; left: 24%; bottom: -22%; transform: translateX(-50%); }
 
 .sprite { padding: 0; background: none; border: 0; display: block; }
 .sprite svg { position: relative; display: block; width: auto; max-width: none; overflow: visible; }
-/* Oval dirt platform centred on the feet. */
-.sprite::before {
-  content: ""; position: absolute; left: 50%; bottom: 0; width: 230%; aspect-ratio: 4 / 1;
-  transform: translate(-50%, 50%); border-radius: 50%;
-  background:
-    radial-gradient(circle at 22% 40%, var(--pad-spot) 0 4%, transparent 5%),
-    radial-gradient(circle at 70% 62%, var(--pad-spot) 0 3%, transparent 4%),
-    radial-gradient(circle at 48% 78%, var(--pad-spot) 0 3%, transparent 4%),
-    radial-gradient(circle at 84% 34%, var(--pad-spot) 0 2.5%, transparent 3.5%),
-    var(--pad);
-  border: 3px solid var(--pad-edge);
-}
-.me::before { width: 250%; }
 .sprite .blocky-body { animation: bob 1.4s steps(2) infinite; }
 .me .blocky-body { animation-delay: .7s; }
-.foe svg { height: clamp(110px, 25vh, 210px); }
-.me svg { height: clamp(170px, 44vh, 360px); }
+.foe svg { height: clamp(130px, 30vh, 250px); }
+.me svg { height: clamp(220px, 58vh, 480px); }
 .foe.hit .blocky-body { animation: shake .3s steps(3); }
 .reading { font-family: var(--f-display); font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
 
@@ -311,10 +298,10 @@ kbd { font-family: var(--f-display); font-size: 10px; border: 1px solid #3b4664;
   .cmd { padding-block: 7px; }
   .foe-card, .me-card { width: 56%; }
   .foe-card::after, .me-card::after { display: none; }
-  .foe { left: 74%; top: 60%; }
-  .foe svg { height: clamp(90px, 17vh, 150px); }
-  .me { left: 26%; bottom: -6%; }
-  .me svg { height: clamp(140px, 30vh, 240px); }
+  .foe { left: 72%; top: 70%; }
+  .foe svg { height: clamp(110px, 21vh, 180px); }
+  .me { left: 28%; bottom: -16%; }
+  .me svg { height: clamp(170px, 38vh, 300px); }
   .info-sub { font-size: 12px; }
   .types { display: none; }
   .info { padding: 8px 10px 10px; }
