@@ -50,10 +50,7 @@ export interface BlockyOptions {
   platform?: number;
 }
 
-/** A circle of radius r on the ground projects to an ellipse with these semi-axes. */
-const ISO_RX = 1.2247;
-const ISO_RY = 0.7071;
-const PLATFORM_DEPTH = 1.1;
+const PLATFORM_DEPTH = 0.45;
 
 type Box = [x0: number, x1: number, y0: number, y1: number, z0: number, z1: number];
 /** Rectangle on a vertical face: [from, to, z0, z1, colour]. */
@@ -74,7 +71,15 @@ interface Part {
   topDecals?: TopDecal[];
 }
 
-const COS30 = 0.866;
+/**
+ * Camera: turned 35° around the vertical axis and looking down at a low angle, like a handheld
+ * battle scene. Ground circles become wide, flat ovals; characters are seen almost from the front.
+ */
+const YAW = (35 * Math.PI) / 180;
+const COS = Math.cos(YAW);
+const SIN = Math.sin(YAW);
+/** How much depth shows up as height on screen (0 = side-on, ~0.6 = isometric). */
+const TILT = 0.3;
 const UNIT = 10;
 const INK = "#141826";
 
@@ -135,9 +140,9 @@ function model(p: BlockyPalette): Part[] {
     { box: [3.2, 5.4, 0.5, 2.5, 1.2, 6], mat: p.pants },
     { box: [3.2, 5.4, 0.5, 2.7, 0, 1.2], mat: p.shoes },
     // Left arm
-    { box: [-1.6, 0, 1, 2.6, 8, 12], mat: p.hoodie },
-    { box: [-1.6, 0, 2.6, 4.6, 8, 9.6], mat: p.hoodie },
-    { box: [-1.6, 0, 4.6, 5.4, 8, 9.6], mat: p.skin },
+    { box: [-1.6, 0, 1, 2.6, 7, 12], mat: p.hoodie },
+    { box: [-1.6, 0, 2.6, 4.6, 7, 8.6], mat: p.hoodie },
+    { box: [-1.6, 0, 4.6, 5.4, 7, 8.6], mat: p.skin },
     // Hoodie, pocket, strings, and the hood on the back
     {
       box: [0, 6, 0, 3.2, 6, 12],
@@ -150,12 +155,12 @@ function model(p: BlockyPalette): Part[] {
     },
     { box: [0.6, 5.4, -0.9, 0, 10.2, 12.6], mat: p.hoodie },
     // Open laptop (front view shows the back of the lid)
-    { box: [-0.6, 6.6, 3.6, 6.2, 9.6, 10.1], mat: p.laptop },
-    { box: [-0.6, 6.6, 3.6, 4.0, 10.1, 13.4], mat: p.laptop, front: [[2.4, 3.6, 11.2, 12.4, p.logo]] },
+    { box: [-0.6, 6.6, 3.6, 6.2, 8.6, 9.1], mat: p.laptop },
+    { box: [-0.6, 6.6, 3.6, 4.0, 9.1, 11.6], mat: p.laptop, front: [[2.4, 3.6, 9.8, 10.9, p.logo]] },
     // Right arm
-    { box: [6, 7.6, 1, 2.6, 8, 12], mat: p.hoodie },
-    { box: [6, 7.6, 2.6, 4.6, 8, 9.6], mat: p.hoodie },
-    { box: [6, 7.6, 4.6, 5.4, 8, 9.6], mat: p.skin },
+    { box: [6, 7.6, 1, 2.6, 7, 12], mat: p.hoodie },
+    { box: [6, 7.6, 2.6, 4.6, 7, 8.6], mat: p.hoodie },
+    { box: [6, 7.6, 4.6, 5.4, 7, 8.6], mat: p.skin },
     // Neck and head
     { box: [1.8, 4.2, 0.8, 2.8, 12, 12.6], mat: p.skin },
     {
@@ -196,7 +201,10 @@ const DIRT: Shade = ["#8a6a4a", "#8a6a4a", "#6e5238"];
 export function buildBlocky(p: BlockyPalette, { view = "front", tile = false, platform }: BlockyOptions = {}): BlockyShape {
   type Raw = { pts: [number, number][]; fill: string };
   const back = view === "back";
-  const P = (x: number, y: number, z: number): [number, number] => [(x - y) * COS30 * UNIT, (x + y) * 0.5 * UNIT - z * UNIT];
+  const P = (x: number, y: number, z: number): [number, number] => [
+    (x * COS - y * SIN) * UNIT,
+    ((x * SIN + y * COS) * TILT - z) * UNIT,
+  ];
   let out: Raw[] = [];
   const quad = (pts: [number, number, number][], fill: string) => out.push({ pts: pts.map((q) => P(...q)), fill });
   const box = ([x0, x1, y0, y1, z0, z1]: Box, top: string, front: string, side: string) => {
@@ -218,10 +226,38 @@ export function buildBlocky(p: BlockyPalette, { view = "front", tile = false, pl
   // Everything on the ground is centred on the middle of the footprint.
   const [footX, footY] = back ? P(-3, -1.6, 0) : P(3, 1.6, 0);
 
-  // Painter's algorithm: the viewer looks along (1, 1, 1), so a larger x + y + z is closer.
-  const parts = model(p)
-    .map((part) => ({ part, b: turn(part.box) }))
-    .sort((a, b) => a.b[0] + a.b[1] + a.b[2] + a.b[3] + a.b[4] + a.b[5] - (b.b[0] + b.b[1] + b.b[2] + b.b[3] + b.b[4] + b.b[5]));
+  // Painter's algorithm with a proper ordering: for two boxes that overlap on screen, the one
+  // behind along a separating axis is drawn first (viewer is on the +x, +y and +z sides).
+  const placed = model(p).map((part) => ({ part, b: turn(part.box) }));
+  const screenBounds = placed.map(({ b: [x0, x1, y0, y1, z0, z1] }) => {
+    const pts = [x0, x1].flatMap((x) => [y0, y1].flatMap((y) => [z0, z1].map((z) => P(x, y, z))));
+    return [Math.min(...pts.map((q) => q[0])), Math.max(...pts.map((q) => q[0])), Math.min(...pts.map((q) => q[1])), Math.max(...pts.map((q) => q[1]))];
+  });
+  const behind = (a: Box, b: Box) => a[1] <= b[0] || a[3] <= b[2] || a[5] <= b[4];
+  const n = placed.length;
+  const after: number[][] = Array.from({ length: n }, () => []);
+  const indegree = new Array<number>(n).fill(0);
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      const [ax0, ax1, ay0, ay1] = screenBounds[i];
+      const [bx0, bx1, by0, by1] = screenBounds[j];
+      if (ax1 <= bx0 || bx1 <= ax0 || ay1 <= by0 || by1 <= ay0) continue;
+      if (behind(placed[i].b, placed[j].b)) { after[i].push(j); indegree[j]++; }
+      else if (behind(placed[j].b, placed[i].b)) { after[j].push(i); indegree[i]++; }
+    }
+  }
+  const depth = (b: Box) => ((b[0] + b[1]) * SIN + (b[2] + b[3]) * COS) / 2 + ((b[4] + b[5]) / 2) * TILT;
+  const parts: typeof placed = [];
+  const ready = placed.map((_, i) => i).filter((i) => indegree[i] === 0);
+  const done = new Set<number>();
+  while (parts.length < n) {
+    ready.sort((i, j) => depth(placed[i].b) - depth(placed[j].b));
+    // A cycle should not happen with these boxes; fall back to plain depth order if it does.
+    const next = ready.shift() ?? placed.map((_, i) => i).filter((i) => !done.has(i)).sort((i, j) => depth(placed[i].b) - depth(placed[j].b))[0];
+    done.add(next);
+    parts.push(placed[next]);
+    for (const k of after[next]) if (--indegree[k] === 0 && !done.has(k)) ready.push(k);
+  }
 
   for (const { part, b } of parts) {
     const [, x1, , y1, , z1] = b;
@@ -246,7 +282,7 @@ export function buildBlocky(p: BlockyPalette, { view = "front", tile = false, pl
   const all = [...ground, ...out];
   const xs = all.flatMap((r) => r.pts.map((q) => q[0]));
   const ys = all.flatMap((r) => r.pts.map((q) => q[1]));
-  const disc = platform ? { rx: platform * ISO_RX * UNIT, ry: platform * ISO_RY * UNIT, depth: PLATFORM_DEPTH * UNIT } : null;
+  const disc = platform ? { rx: platform * UNIT, ry: platform * TILT * UNIT, depth: PLATFORM_DEPTH * UNIT } : null;
   if (disc) {
     xs.push(footX - disc.rx, footX + disc.rx);
     ys.push(footY - disc.ry, footY + disc.ry + disc.depth);
@@ -266,7 +302,7 @@ export function buildBlocky(p: BlockyPalette, { view = "front", tile = false, pl
   return {
     ground: toPolys(ground),
     platform: disc ? { cx, cy, ...disc } : undefined,
-    shadow: { cx, cy, rx: 3.6 * ISO_RX * UNIT, ry: 3.6 * ISO_RY * UNIT },
+    shadow: { cx, cy, rx: 4.6 * UNIT, ry: 4.6 * TILT * UNIT },
     body: toPolys(out),
     width: half * 2,
     height: Math.max(...ys) + pad - minY,

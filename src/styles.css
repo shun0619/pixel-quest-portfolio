@@ -116,31 +116,37 @@ img, canvas { max-width: 100%; }
    his card top-left; the visitor is seen from behind, close, bottom-left, cropped by the HUD. */
 .field {
   position: relative; flex: 1; min-height: 240px; overflow: hidden;
+  --streak: rgba(255, 255, 255, .42);
+  --streak-dark: rgba(40, 120, 90, .14);
   background:
-    linear-gradient(90deg, transparent 8%, rgba(255, 255, 255, .55) 8% 40%, transparent 40% 58%, rgba(255, 255, 255, .45) 58% 92%, transparent 92%) 0 9% / 100% 3px no-repeat,
-    linear-gradient(90deg, rgba(255, 255, 255, .4) 0 22%, transparent 22% 47%, rgba(255, 255, 255, .5) 47% 80%, transparent 80%) 0 19% / 100% 4px no-repeat,
-    linear-gradient(90deg, transparent 15%, rgba(255, 255, 255, .45) 15% 66%, transparent 66%) 0 29% / 100% 3px no-repeat,
-    linear-gradient(90deg, rgba(255, 255, 255, .35) 0 30%, transparent 30% 52%, rgba(255, 255, 255, .35) 52% 100%) 0 52% / 100% 4px no-repeat,
-    linear-gradient(90deg, transparent 10%, rgba(255, 255, 255, .3) 10% 72%, transparent 72%) 0 66% / 100% 5px no-repeat,
-    linear-gradient(90deg, rgba(255, 255, 255, .28) 0 40%, transparent 40% 60%, rgba(255, 255, 255, .28) 60% 100%) 0 82% / 100% 6px no-repeat,
-    linear-gradient(var(--sky-top), var(--sky-bot) 38%, var(--horizon) 38% 40%, var(--meadow-top) 40%, var(--meadow-bot) 100%);
+    linear-gradient(90deg, transparent 6%, var(--streak) 6% 38%, transparent 38% 55%, var(--streak) 55% 90%, transparent 90%) 0 6% / 100% 5px no-repeat,
+    linear-gradient(90deg, var(--streak-dark) 0 30%, transparent 30% 48%, var(--streak-dark) 48% 100%) 0 12% / 100% 8px no-repeat,
+    linear-gradient(90deg, var(--streak) 0 20%, transparent 20% 44%, var(--streak) 44% 78%, transparent 78%) 0 18% / 100% 4px no-repeat,
+    linear-gradient(90deg, transparent 12%, var(--streak-dark) 12% 70%, transparent 70%) 0 24% / 100% 7px no-repeat,
+    linear-gradient(90deg, transparent 25%, var(--streak) 25% 64%, transparent 64% 80%, var(--streak) 80% 100%) 0 30% / 100% 3px no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, .38) 0 36%, transparent 36% 52%, rgba(255, 255, 255, .38) 52% 100%) 0 46% / 100% 6px no-repeat,
+    linear-gradient(90deg, transparent 8%, rgba(70, 140, 50, .14) 8% 66%, transparent 66%) 0 55% / 100% 10px no-repeat,
+    linear-gradient(90deg, transparent 18%, rgba(255, 255, 255, .32) 18% 82%, transparent 82%) 0 66% / 100% 6px no-repeat,
+    linear-gradient(90deg, rgba(70, 140, 50, .12) 0 44%, transparent 44% 58%, rgba(70, 140, 50, .12) 58% 100%) 0 78% / 100% 12px no-repeat,
+    linear-gradient(90deg, rgba(255, 255, 255, .28) 0 30%, transparent 30% 46%, rgba(255, 255, 255, .28) 46% 100%) 0 90% / 100% 8px no-repeat,
+    linear-gradient(var(--sky-top), var(--sky-bot) 36%, var(--horizon) 36% 38%, var(--meadow-top) 38%, var(--meadow-bot) 100%);
 }
-.foe-card { position: absolute; z-index: 2; top: 6%; left: 3%; width: min(46%, 340px); }
-.me-card { position: absolute; z-index: 2; right: 3%; bottom: 6%; width: min(44%, 320px); }
+.foe-card { position: absolute; z-index: 2; top: 7%; left: 0; width: min(46%, 350px); border-left: 0; border-radius: 0 14px 14px 0; padding-left: 20px; }
+.me-card { position: absolute; z-index: 2; right: 0; bottom: 6%; width: min(44%, 330px); border-right: 0; border-radius: 14px 0 0 14px; padding-right: 20px; }
 /* Little pointers, like a speech tail, aiming each card at its character. */
 .foe-card::after, .me-card::after { content: ""; position: absolute; top: 50%; width: 0; height: 0; border: 9px solid transparent; transform: translateY(-50%); }
 .foe-card::after { right: -21px; border-left-color: var(--ink); }
 .me-card::after { left: -21px; border-right-color: var(--ink); }
 
-.foe { position: absolute; z-index: 1; left: 72%; top: 58%; transform: translate(-50%, -100%); }
-.me { position: absolute; z-index: 1; left: 24%; bottom: -22%; transform: translateX(-50%); }
+.foe { position: absolute; z-index: 1; left: 71%; top: 52%; transform: translate(-50%, -100%); }
+.me { position: absolute; z-index: 1; left: 27%; bottom: -16%; transform: translateX(-50%); }
 
 .sprite { padding: 0; background: none; border: 0; display: block; }
 .sprite svg { position: relative; display: block; width: auto; max-width: none; overflow: visible; }
 .sprite .blocky-body { animation: bob 1.4s steps(2) infinite; }
 .me .blocky-body { animation-delay: .7s; }
-.foe svg { height: clamp(130px, 30vh, 250px); }
-.me svg { height: clamp(220px, 58vh, 480px); }
+.foe svg { height: clamp(120px, 27vh, 230px); }
+.me svg { height: clamp(200px, 50vh, 420px); }
 .foe.hit .blocky-body { animation: shake .3s steps(3); }
 .reading { font-family: var(--f-display); font-size: 11px; text-align: right; font-variant-numeric: tabular-nums; }
 
@@ -298,10 +304,10 @@ kbd { font-family: var(--f-display); font-size: 10px; border: 1px solid #3b4664;
   .cmd { padding-block: 7px; }
   .foe-card, .me-card { width: 56%; }
   .foe-card::after, .me-card::after { display: none; }
-  .foe { left: 72%; top: 70%; }
-  .foe svg { height: clamp(110px, 21vh, 180px); }
-  .me { left: 28%; bottom: -16%; }
-  .me svg { height: clamp(170px, 38vh, 300px); }
+  .foe { left: 70%; top: 66%; }
+  .foe svg { height: clamp(100px, 19vh, 170px); }
+  .me { left: 30%; bottom: -12%; }
+  .me svg { height: clamp(160px, 34vh, 280px); }
   .info-sub { font-size: 12px; }
   .types { display: none; }
   .info { padding: 8px 10px 10px; }

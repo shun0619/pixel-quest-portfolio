@@ -27,13 +27,12 @@ export function Blocky({ palette, view = "front", tile = false, platform, flip =
     <svg className={className} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" focusable="false">
       <g transform={flip ? `translate(${w} 0) scale(-1 1)` : undefined} stroke={BLOCKY_OUTLINE} strokeWidth="1.2" strokeLinejoin="round">
         {disc && (
-          <g className="blocky-platform">
+          <g className="blocky-platform" stroke="#7fae5c" strokeWidth="2.5">
             <path
               d={`M${disc.cx - disc.rx} ${disc.cy} v${disc.depth} a${disc.rx} ${disc.ry} 0 0 0 ${disc.rx * 2} 0 v${-disc.depth} z`}
-              fill="#c4a874"
+              fill="#cdb684"
             />
             <ellipse cx={disc.cx} cy={disc.cy} rx={disc.rx} ry={disc.ry} fill="#ead9ae" />
-            <ellipse cx={disc.cx} cy={disc.cy} rx={disc.rx - 5} ry={disc.ry - 3} fill="none" stroke="#f6ecd0" strokeWidth="2" />
             {SPOTS.map(([fx, fy, fr], i) => (
               <ellipse
                 key={i}
